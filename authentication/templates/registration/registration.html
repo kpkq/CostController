@@ -1,7 +1,5 @@
 {% extends 'template.html' %}
-{% block includes %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-{% endblock %}
+{% load crispy_forms_filters %}
 {% block title %}Sign Up{% endblock %}
 
 {% block body %}
@@ -27,7 +25,8 @@
     </script>
     <form method="post" id="register-form">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% load crispy_forms_tags %}
+        {{ form|crispy }}
         <button type="submit">Sign Up</button>
     </form>
 {% endblock %}
