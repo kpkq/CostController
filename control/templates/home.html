@@ -28,11 +28,13 @@
                 });
         })
         </script>
-        <form method="POST" id="spending-form">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">Подтвердить</button>
-        </form>
+        <div class="container">
+            <form method="POST" id="spending-form">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Подтвердить</button>
+            </form>
+        </div>
     {% else %}
         <p>You are not logged in</p>
         <a href="{% url 'login' %}">Log In</a> |
