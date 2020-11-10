@@ -6,4 +6,7 @@ from authentication.models import CostControlUser
 
 class Spendings(models.Model):
     user = models.OneToOneField(CostControlUser, on_delete=models.CASCADE, db_index=True)
-    info = models.JSONField()
+    info = models.JSONField(default='')
+
+    def __str__(self):
+        return self.user.username

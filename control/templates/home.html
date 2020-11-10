@@ -16,7 +16,7 @@
                     $.ajax({
                         data: $(this).serialize(),
                         type: $(this).attr('method'),
-                        url: "{% url 'get_spendings' %}",
+                        url: "{% url 'home' %}",
                         success: function (response) {
                             console.log('ok')
                         },

@@ -12,7 +12,7 @@ def get_spendings(request):
             category = form.cleaned_data.get("category")
             costs = form.cleaned_data.get("costs")
             user_spendings = Spendings.objects.get_or_create(user=request.user)
-
+            print()
     else:
         form = SpendingForm()
     return render(request, 'home.html', {'form': form})
