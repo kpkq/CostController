@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
@@ -26,9 +27,14 @@ def get_spendings(request):
                     spend.info[category] += costs
                 print(spend.info)
                 spend.save()
+                return JsonResponse(spend.info)
             except Spendings.DoesNotExist:
                 Spendings(user=request.user, info={category: costs}).save()
+                return JsonResponse({category: costs})
 
     else:
         form = SpendingForm()
-    return render(request, 'home.html', {'form': form})
+        info = Spendings.objects.get(user__email__exact=request.user.email).info
+        print(type(json.dumps(info)))
+        print(json.dumps(info))
+    return render(request, 'home.html', {'form': form, 'info': json.dumps(info)})
