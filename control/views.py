@@ -1,7 +1,7 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -27,10 +27,19 @@ def ajax_spending_form(request):
                 else:
                     spend.info[category] += costs
                 spend.save()
-                return JsonResponse(spend.info)
+                return JsonResponse({"json_response": spend.info, "salary": spend.salary})
             except Spendings.DoesNotExist:
                 Spendings(user=request.user, info={category: costs}).save()
                 return JsonResponse({category: costs})
+
+
+def ajax_delete_view(request):
+    request.is_ajax()
+    spend = Spendings.objects.get(user__email__exact=request.user.email)
+    del spend.info[request.POST["category"]]
+    print(spend.info)
+    spend.save()
+    return JsonResponse({"json_response": spend.info, "salary": spend.salary})
 
 
 @login_required
@@ -53,8 +62,9 @@ def show_pie(request):
             else:
                 spend.salary = salary
                 spend.save()
-                return JsonResponse({"success": True})
+                return JsonResponse({"salary": salary, "spent": spend.info})
     else:
         form = SalaryForm()
         spend_form = SpendingForm()
-    return render(request, 'pie.html', {'form': form, 'spend_form': spend_form})
+        spending = Spendings.objects.get(user__email__exact=request.user.email)
+    return render(request, 'pie.html', {'form': form, 'spend_form': spend_form, 'info': json.dumps(spending.info), 'salary': spending.salary})

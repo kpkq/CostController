@@ -17,31 +17,28 @@
             }
         );
 
+        function random_int() {
+            return Math.floor(Math.random() * 255) + 1
+        }
+
         function draw(data) {
             const ctx = document.getElementById('myChart').getContext('2d');
+            let colors = []
+            const values = Object.values(data)
+            for(let i = 0; i < values.length; i++)
+            {
+                const color = `rgba(${random_int()}, ${random_int()}, ${random_int()}, 0.5)`
+                colors.push(color)
+            }
             const myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: Object.keys(data),
                     datasets: [{
                         label: 'Денег потрачено',
-                        data: Object.values(data),
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
+                        data: values,
+                        backgroundColor: colors,
+                        borderColor: colors,
                         borderWidth: 1
                     }]
                 },
@@ -64,7 +61,7 @@
                     type: $(this).attr('method'),
                     url: "{% url 'ajax_request' %}",
                     success: function (response) {
-                        draw(response)
+                        draw(response.json_response)
                     },
                     error: function (response) {
                         alert(response.responseJSON.error)
