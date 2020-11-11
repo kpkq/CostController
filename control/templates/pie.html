@@ -1,0 +1,74 @@
+{% extends 'template.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block body %}
+    {% if user.is_authenticated %}
+        Hi {{ user.username }}!
+        <script>
+
+
+        $(document).ready(function () {
+            $('#salary-form').submit(function () {
+                $.ajax({
+                    data: $(this).serialize(),
+                    type: $(this).attr('method'),
+                    url: "{% url 'pie' %}",
+                    success: function (response) {
+                        console.log("ok")
+                    },
+                    error: function (response) {
+                        alert(response.responseJSON.error)
+                    }
+                });
+                return false;
+            });
+        })
+
+        $(document).ready(function () {
+            $('#spending-form').submit(function () {
+                $.ajax({
+                    data: $(this).serialize(),
+                    type: $(this).attr('method'),
+                    url: "{% url 'ajax_request' %}",
+                    success: function (response) {
+                        console.log("ok")
+                    },
+                    error: function (response) {
+                        alert(response.responseJSON.error)
+                    }
+                });
+                return false;
+            });
+        })
+        </script>
+
+
+
+        <p><a href="{% url 'logout' %}">Log Out</a></p>
+        <div class="mt-5">
+            <div class="col-md-2 float-right mr-5">
+                <form method="POST" id="salary-form">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary ">Подтвердить</button>
+                </form>
+                <form method="POST" id="spending-form">
+                    {% csrf_token %}
+                    {{ spend_form|crispy }}
+                    <button type="submit" class="btn btn-primary ">Подтвердить</button>
+                </form>
+            </div>
+            <div class="container justify-content-center col-md-5">
+                <canvas id="myChart" width="200" height="200"></canvas>
+            </div>
+        </div>
+    {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">Log In</a> |
+        <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+{% endblock %}

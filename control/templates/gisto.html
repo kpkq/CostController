@@ -58,23 +58,26 @@
         }
 
         $(document).ready(function () {
-            console.log('hello')
             $('#spending-form').submit(function () {
                 $.ajax({
                     data: $(this).serialize(),
                     type: $(this).attr('method'),
-                    url: "{% url 'home' %}",
+                    url: "{% url 'ajax_request' %}",
                     success: function (response) {
-                        console.log(response)
                         draw(response)
                     },
                     error: function (response) {
-                        console.log('error')
+                        alert(response.responseJSON.error)
                     }
                 });
                 return false;
             });
         })
+
+
+
+
+
         </script>
         <div class="mt-5">
             <div class="col-md-2 float-right mr-5">

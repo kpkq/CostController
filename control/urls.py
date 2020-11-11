@@ -1,9 +1,10 @@
 from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import TemplateView
+from django.urls import path
 
-from control.views import get_spendings
+from control.views import *
 
 urlpatterns = [
-    path('', get_spendings, name='home'),
+    path('gisto', show_gisto, name='gisto'),
+    path('pie', show_pie, name='pie'),
+    path('ajax_request', ajax_spending_form, name='ajax_request')
     ]
