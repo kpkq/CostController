@@ -36,8 +36,6 @@ def ajax_spending_form(request):
 def ajax_delete_view(request):
     spend = Spendings.objects.get(user__email__exact=request.user.email)
     del spend.info[request.POST["category"]]
-    print(spend.info)
-    print(spend.salary)
     spend.save()
     return JsonResponse({"json_response": spend.info, "salary": spend.salary})
 
@@ -46,6 +44,8 @@ def ajax_change_spending(request):
     spend = Spendings.objects.get(user__email__exact=request.user.email)
     if request.POST["category"] != request.POST["changed"]:
         del spend.info[request.POST["changed"]]
+        spend.info[request.POST["category"]] = request.POST["costs"]
+    else:
         spend.info[request.POST["category"]] = request.POST["costs"]
     spend.save()
     return JsonResponse({"json_response": spend.info, "salary": spend.salary})
