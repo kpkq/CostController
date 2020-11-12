@@ -16,7 +16,7 @@
         function draw_pie(data, salary) {
 
             const ctx = document.getElementById('myChart').getContext('2d');
-            const spent = Object.values(data).reduce((a, b) => { return a + b }, 0)
+            const spent = Object.values(data).reduce((a, b) => { return parseInt(a) + parseInt(b) }, 0)
             let values = 0
             let keys = 0
             if (spent - salary < 0){
@@ -99,6 +99,7 @@
         $(document).ready(function () {
             const parsedDict = JSON.parse("{{info|escapejs}}")
             const parsedSalary = JSON.parse("{{salary|escapejs}}")
+            document.getElementById("id_salary").value = parsedSalary
                 draw_pie(parsedDict, parsedSalary)
         }
     )
@@ -114,19 +115,21 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" id="exampleModalInnerForm">
-                    {{ spend_form|crispy }}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modalButtonDelete">Удалить</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
+                    <form method="post" id="change_spending_form">
+                        <div class="modal-body" id="exampleModalInnerForm">
+                            {% csrf_token %}
+                            {{ change_spending_form|crispy }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modalButtonDelete">Удалить</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
         <script>
         document.getElementById('modalButtonDelete').addEventListener("click", function () {
-            console.log(document.getElementById("exampleModalCenterTitle").innerText)
             $.ajax({
                 data: {'category': document.getElementById("exampleModalCenterTitle").innerText,
                         'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()},
@@ -136,6 +139,23 @@
                     draw_pie(response.json_response, response.salary)
                 }
             })
+        })
+        $(document).ready(function () {
+            $('#change_spending_form').submit(function () {
+                console.log($(this).serialize()+`&changed=${document.getElementById("exampleModalCenterTitle").innerText}`)
+                $.ajax({
+                    data: $(this).serialize()+`&changed=${document.getElementById("exampleModalCenterTitle").innerText}`,
+                    type: $(this).attr('method'),
+                    url: "{% url 'ajax_change' %}",
+                    success: function (response) {
+                        draw_pie(response.json_response, response.salary)
+                    },
+                    error: function (response) {
+                        alert(response.responseJSON.error)
+                    }
+                });
+                return false;
+            });
         })
         </script>
 

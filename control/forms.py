@@ -8,3 +8,8 @@ class SpendingForm(forms.Form):
 
 class SalaryForm(forms.Form):
     salary = forms.FloatField(label="Ваша зарплата")
+
+
+class ChangeSpendingForm(forms.Form):
+    category = forms.CharField(max_length=50, label="Изменить категорию траты")
+    costs = forms.FloatField(label="Изменить потраченную сумму")
